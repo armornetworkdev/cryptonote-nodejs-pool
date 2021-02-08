@@ -1,7 +1,7 @@
 {
 	"poolHost": "your.pool.host",
 
-	"coin": "default",
+	"coin": "Armor",
 	"symbol": "AMX",
 	"coinUnits": 100000000,
 	"coinDecimalPlaces": 8,
