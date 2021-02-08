@@ -97,24 +97,49 @@ Community / Support
 
 Usage
 ===
-
 #### Requirements
-* [Node.js](http://nodejs.org/) v12.0+
-  * For Ubuntu:
- ```
-  curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash
-  sudo apt-get install -y nodejs
- ```
-  * Or use NVM(https://github.com/creationix/nvm) for debian/ubuntu.
++ [Node.js](http://nodejs.org/) v12.0+
+  + For Ubuntu:
+    ```
+    curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash
+    sudo apt-get install -y nodejs
+    ```
+    + Check nodejs version:
+     ```
+     node --version
+     ```
+      + Must return v12.0+.
+        + Else, you can install "n", to run `sudo n [version to install]`:
+       ```
+        sudo npm install -g n
+        n --help
+        sudo n 12
+       ```
+  + Or use NVM(https://github.com/creationix/nvm) for debian/ubuntu.
 
-
-* [Redis](http://redis.io/) key-value store v2.6+
-  * For Ubuntu:
-```
-sudo add-apt-repository ppa:chris-lea/redis-server
-sudo apt-get update
-sudo apt-get install redis-server
- ```
++ [Redis](http://redis.io/) key-value store v2.6+
+  + For Ubuntu:
+  ```
+  sudo add-apt-repository ppa:chris-lea/redis-server
+  sudo apt-get update
+  sudo apt-get install redis-server
+  ```
+    + If you have errors, like this:
+      ```
+      Reading package lists... Done 
+      W: Skipping acquire of configured file '6.0/binary-amd64/Packages' as repository 'https://apt.llvm.org/bionic llvm-toolchain-bionic InRelease' doesn't have the component '6.0' (component misspelt in sources.list?) 
+      W: Skipping acquire of configured file '6.0/i18n/Translation-en' as repository 'https://apt.llvm.org/bionic llvm-toolchain-bionic InRelease' doesn't have the component '6.0' (component misspelt in sources.list?) 
+      W: Skipping acquire of configured file '6.0/cnf/Commands-amd64' as repository 'https://apt.llvm.org/bionic llvm-toolchain-bionic InRelease' doesn't have the component '6.0' (component misspelt in sources.list?)
+      ```
+      + Try to see packages: `sudo grep -rhE ^deb /etc/apt/sources.list*`
+      + Then just open this file `sudo nano /etc/apt/sources.list`
+      + And comment both lines with `#`
+      ```
+      #deb https://apt.llvm.org/bionic/ llvm-toolchain-bionic 6.0 main 
+      #deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-6.0 main
+      ```
+        + then `run sudo apt update`
+ 
  Dont forget to tune redis-server:
  ```
 echo never > /sys/kernel/mm/transparent_hugepage/enabled
