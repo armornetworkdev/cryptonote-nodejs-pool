@@ -1,6 +1,6 @@
 var api = "https://your-api.pool.com:4010";
 var apiMerged = "";
-let parentCoin = ""
+let parentCoin = "Armor"
 
 var email = "";
 var telegram = "";
