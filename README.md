@@ -653,6 +653,9 @@ Variable explanations:
 /* Must point to the API setup in your config.json file. */
 var api = "http://poolhost:4009";
 
+/* Must match the "coin"-value in coin config.json, else this will be displayed twice... */
+var parentCoin = "default"; //when "coin": "default"
+
 /* Pool server host to instruct your miners to point to (override daemon setting if set) */
 var poolHost = "poolhost.com";
 
