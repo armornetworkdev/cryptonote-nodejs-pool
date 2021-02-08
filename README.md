@@ -657,7 +657,7 @@ var api = "http://poolhost:4009";
 var poolHost = "poolhost.com";
 
 /* Number of coin decimals places (override daemon setting if set) */
-"coinDecimalPlaces": 8,
+var coinDecimalPlaces = 8;
 
 /* Contact email address. */
 var email = "support@poolhost.com";
