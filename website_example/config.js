@@ -1,5 +1,9 @@
+/* Pool server host to instruct your miners to point to (override daemon setting if set) */
+var poolHost = "poolhost.com";
+
 /* Must point to the API setup in your config.json file. */
 //var api = "http://poolhost:4009";           //HTTP API - Pool-Frontend can be available via HTTP.
+//var api = "http://"+poolHost+":4009";       //HTTP API on poolHost.
 
 /*
   To raise this too, with HTTP API, on start pool,
@@ -8,14 +12,12 @@
   Self-Assigned SSL Certificate and key, can be generated,
   by this guide: https://gist.github.com/username1565/7321d63b44e1241f992c00d76b833c9a
 */
-var api = "https://your-api.pool.com:4010";   //HTTPS API - Pool-Frontend can be available via HTTPS, and requests on HTTP-API is unsecure.
+//var api = "https://your-api.pool.com:4010";   //HTTPS API - Pool-Frontend can be available via HTTPS, and requests on HTTP-API is unsecure.
+var api = "https://"+poolHost+".com:4010";   //HTTPS API - on poolHost
 var apiMerged = "";
 
 /* Must match the "coin"-value in coin config.json, else this will be displayed twice... */
 var parentCoin = "Armor"; //when '"coin": "Armor"' in coin config.json
-
-/* Pool server host to instruct your miners to point to (override daemon setting if set) */
-var poolHost = "poolhost.com";
 
 /* Number of coin decimals places (override daemon setting if set) */
 var coinDecimalPlaces = 8;
