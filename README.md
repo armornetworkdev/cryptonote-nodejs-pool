@@ -667,8 +667,21 @@ sudo systemctl start cryptonote-nodejs-pool.service
 
 #### 4) Host the front-end
 
-Simply host the contents of the `website_example` directory on file server capable of serving simple static files.
-
++ Simply host the contents of the `website_example` directory on file server capable of serving simple static files.
+  + For example:
+   ```
+   sudo npm install http-server -g
+   ```
+    + then
+      ```
+      http-server pathwayTo/website_example -a 192.168.0.156 -p 8080
+      ```
+      + then go to http://192.168.0.156:8080
+    + or
+      ```
+      http-server pathwayTo/website_example -a 192.168.0.156 -p 8080 -S --cert pathwayTo/localhost.crt --key pathwayTo/localhost.key
+      ```
+      + then go to https://192.168.0.156:8080
 
 Edit the variables in the `website_example/config.js` file to use your pool's specific configuration.
 Variable explanations:
@@ -727,57 +740,52 @@ to `index.html` or other front-end files thus reducing the difficulty of merging
 Then simply serve the files via nginx, Apache, Google Drive, or anything that can host static content.
 
 #### SSL
+  + If you have no any SSL Certificate, or private key, you can generate this, as self-assigned certificate, [by the following guide](https://gist.github.com/username1565/7321d63b44e1241f992c00d76b833c9a).
 
-You can configure the API to be accessible via SSL using various methods. Find an example for nginx below:
+  + You can configure the API to be accessible via SSL using various methods.
+    + Using SSL api in `config.json`:
+      + Need to switch `(config.json).api.ssl = true`, and set it true, to run API via HTTPS too, on start pool-backend.
+        + By using this you will need to update your `api` variable in the `website_example/config.js`.
+        + For example: `var api = "https://poolhost:4009";` (just, change API from HTTP to HTTPS), there, and see comments.
 
-* Using SSL api in `config.json`:
+    + Find an example for nginx below. Inside your SSL Listener, add the following:
+      ``` javascript
+      location ~ ^/api/(.*) {
+          proxy_pass http://127.0.0.1:4009/$1$is_args$args;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      }
+      ```
+      + By adding this you will need to update your `api` variable in the `website_example/config.js` to include the /api.
+        + For example: `var api = "http://poolhost/api";`
 
-By using this you will need to update your `api` variable in the `website_example/config.js`. For example:  
-`var api = "https://poolhost:4009";`
+      + You no longer need to include the port in the variable because of the proxy connection.
 
-* Inside your SSL Listener, add the following:
+    + Using his own subdomain, for example `api.poolhost.com`:
+    ```bash
+    server {
+        server_name api.poolhost.com
+        listen 443 ssl http2;
+        listen [::]:443 ssl http2;
 
-``` javascript
-location ~ ^/api/(.*) {
-    proxy_pass http://127.0.0.1:4009/$1$is_args$args;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-}
-```
+        ssl_certificate /your/ssl/certificate;
+        ssl_certificate_key /your/ssl/certificate_key;
 
-By adding this you will need to update your `api` variable in the `website_example/config.js` to include the /api. For example:  
-`var api = "http://poolhost/api";`
-
-You no longer need to include the port in the variable because of the proxy connection.
-
-* Using his own subdomain, for example `api.poolhost.com`:
-
-```bash
-server {
-    server_name api.poolhost.com
-    listen 443 ssl http2;
-    listen [::]:443 ssl http2;
-
-    ssl_certificate /your/ssl/certificate;
-    ssl_certificate_key /your/ssl/certificate_key;
-
-    location / {
-        more_set_headers 'Access-Control-Allow-Origin: *';
-        proxy_pass http://127.0.01:4010;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_cache_bypass $http_upgrade;
+        location / {
+            more_set_headers 'Access-Control-Allow-Origin: *';
+            proxy_pass http://127.0.01:4010;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header Host $host;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_cache_bypass $http_upgrade;
+        }
     }
-}
-```
-
-By adding this you will need to update your `api` variable in the `website_example/config.js`. For example:  
-`var api = "//api.poolhost.com";`
-
-You no longer need to include the port in the variable because of the proxy connection.
-
+    ```
+      + By adding this you will need to update your `api` variable in the `website_example/config.js`.
+        + For example: `var api = "//api.poolhost.com";`
+    
+      + You no longer need to include the port in the variable because of the proxy connection.
 
 #### Upgrading
 When updating to the latest code its important to not only `git pull` the latest from this repo, but to also update
