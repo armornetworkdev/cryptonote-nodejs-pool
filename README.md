@@ -1,8 +1,7 @@
-cryptonote-nodejs-pool
+armor-nodejs-pool
 ======================
 
-High performance Node.js (with native C addons) mining pool for CryptoNote based coins. Comes with lightweight example front-end script which uses the pool's AJAX API. Support for Cryptonight (Original, Monero v7, Stellite v7), Cryptonight Light (Original, Aeon v7, IPBC) Cryptonight Fast (Electronero/Crystaleum), and Cryptonight Heavy (Sumokoin) algorithms.
-
+High performance Node.js (with native C addons) mining pool for **Armor Network**.
 
 #### Table of Contents
 * [Features](#features)
@@ -31,7 +30,6 @@ Features
 * TCP (stratum-like) protocol for server-push based jobs
   * Compared to old HTTP protocol, this has a higher hash rate, lower network/CPU server load, lower orphan
     block percent, and less error prone
-* Support for Cryptonight (Original, Monero v7, Stellite v7), Cryptonight Light (Original, Aeon v7, IPBC) and Cryptonight Heavy (Sumokoin) algorithms.
 * IP banning to prevent low-diff share attacks
 * Socket flooding detection
 * Share trust algorithm to reduce share validation hashing CPU load
@@ -58,7 +56,6 @@ Features
 #### Mined blocks explorer
 * Mined blocks table with block status (pending, confirmed, and orphaned)
 * Blocks luck (shares/difficulty) statistics
-* Universal blocks and transactions explorer based on [chainradar.com](http://chainradar.com)
 
 #### Smart payment processing
 * Splintered transactions to deal with max transaction size
@@ -94,42 +91,25 @@ Features
 Community / Support
 ===
 
-* [GitHub Wiki](https://github.com/dvandal/cryptonote-nodejs-pool/wiki)
-* [GitHub Issues](https://github.com/dvandal/cryptonote-nodejs-pool/issues)
-* [Telegram Group](http://t.me/CryptonotePool)
-
-#### Pools Using This Software
-
-* https://mining.crystaleum.org/
-* https://ukpool.electronero.org/
-* https://ukpool.electroneropulse.org/
-* https://poolgui.litenero.org/
-* https://poolgui.goldnero.org/
-* https://imaginary.stream/
-* https://graft.anypool.net/
-* https://www.dark-mine.su/
-* http://itns.proxpool.com/
-* https://bytecoin.pt/
-* https://pool.leviar.io/
-* https://pool.croat.community/
+* [GitHub Wiki](https://github.com/armornetworkdev/armor-nodejs-pool/wiki)
+* [GitHub Issues](https://github.com/armornetworkdev/armor-nodejs-pool/issues)
+* [Telegram Group](https://t.me/ARMORCURRENCY)
 
 Usage
 ===
 
 #### Requirements
-* Coin daemon(s) (find the coin's repo and build latest version from source)
-  * [List of Cryptonote coins](https://github.com/dvandal/cryptonote-nodejs-pool/wiki/Cryptonote-Coins)
-* [Node.js](http://nodejs.org/) v11.0+
-  * For Ubuntu: 
+* [Node.js](http://nodejs.org/) v12.0+
+  * For Ubuntu:
  ```
-  curl -sL https://deb.nodesource.com/setup_11.x | sudo -E bash
+  curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash
   sudo apt-get install -y nodejs
  ```
   * Or use NVM(https://github.com/creationix/nvm) for debian/ubuntu.
 
 
-* [Redis](http://redis.io/) key-value store v2.6+ 
-  * For Ubuntu: 
+* [Redis](http://redis.io/) key-value store v2.6+
+  * For Ubuntu:
 ```
 sudo add-apt-repository ppa:chris-lea/redis-server
 sudo apt-get update
@@ -144,7 +124,7 @@ echo 1024 > /proc/sys/net/core/somaxconn
  ```
  chmod +x /etc/rc.local
  ```
- 
+
 * libssl required for the node-multi-hashing module
   * For Ubuntu: `sudo apt-get install libssl-dev`
 
@@ -162,7 +142,7 @@ you are using - a good place to start with redis is [data persistence](http://re
 ```bash
 sudo adduser --disabled-password --disabled-login your-user
 ```
-To login with this user : 
+To login with this user :
 ```
 sudo su - your-user
 ```
@@ -173,7 +153,7 @@ sudo su - your-user
 Clone the repository and run `npm update` for all the dependencies to be installed:
 
 ```bash
-git clone https://github.com/dvandal/cryptonote-nodejs-pool.git pool
+git clone https://github.com/armornetworkdev/armor-nodejs-pool.git pool
 cd pool
 
 npm update
@@ -199,7 +179,7 @@ Explanation for each field:
 
 /* Number of coin decimals places for notifications and front-end */
 "coinDecimalPlaces": 4,
-  
+
 /* Coin network time to mine one block, see DIFFICULTY_TARGET constant in DAEMON_CODE/src/cryptonote_config.h */
 "coinDifficultyTarget": 120,
 
@@ -218,7 +198,7 @@ Explanation for each field:
 "cnVariant": 1,
 "cnBlobType": 0,
 "includeHeight":false, /*true to include block.height in job to miner*/
-"includeAlgo":"cn/wow", /*wownero specific change to include algo in job to miner*/	
+"includeAlgo":"cn/wow", /*wownero specific change to include algo in job to miner*/
 "isRandomX": true,
 /* Logging */
 "logging": {
@@ -269,16 +249,16 @@ Explanation for each field:
 
     /* Address where block rewards go, and miner payments come from. */
     "poolAddress": "your wallet",
-    
+
     /* This is the Public address prefix used for miner login validation. */
     "pubAddressPrefix": 343,
-    
+
     /* This is the Integrated address prefix used for miner login validation. */
     "intAddressPrefix": 340,
-    
+
     /* This is the Subaddress prefix used for miner login validation. */
     "subAddressPrefix": 439,
-    
+
     /* Poll RPC daemons for new blocks every this many milliseconds. */
     "blockRefreshInterval": 1000,
 
@@ -288,7 +268,7 @@ Explanation for each field:
     "sslCert": "./cert.pem", // The SSL certificate
     "sslKey": "./privkey.pem", // The SSL private key
     "sslCA": "./chain.pem" // The SSL certificate authority chain
-    
+
     "ports": [
         {
             "port": 3333, // Port for mining apps to connect to
@@ -335,7 +315,7 @@ Explanation for each field:
         "variancePercent": 30, // Allow time to vary this % from target without retargeting
         "maxJump": 100 // Limit diff percent increase/decrease in a single retargeting
     },
-	
+
     /* Set difficulty on miner client side by passing <address> param with +<difficulty> postfix */
     "fixedDiff": {
         "enabled": true,
@@ -367,7 +347,7 @@ Explanation for each field:
         "invalidPercent": 25, // What percent of invalid shares triggers ban
         "checkThreshold": 30 // Perform check when this many shares have been submitted
     },
-    
+
     /* Slush Mining is a reward calculation technique which disincentivizes pool hopping and rewards 'loyal' miners by valuing younger shares higher than older shares. Remember adjusting the weight!
     More about it here: https://mining.bitcoin.cz/help/#!/manual/rewards */
     "slushMining": {
@@ -383,7 +363,6 @@ Explanation for each field:
     "maxAddresses": 50, // Split up payments if sending to more than this many addresses
     "mixin": 5, // Number of transactions yours is indistinguishable from
     "priority": 0, // The transaction priority    
-    "transferFee": 4000000000, // Fee to pay for each transaction
     "dynamicTransferFee": true, // Enable dynamic transfer fee (fee is multiplied by number of miners)
     "minerPayFee" : true, // Miner pays the transfer fee instead of pool owner when using dynamic transfer fee
     "minPayment": 100000000000, // Miner balance required before sending payment
@@ -407,7 +386,7 @@ Explanation for each field:
     "finderReward": 0.2, // 0.2 finder reward
     "devDonation": 0.2, // 0.2% donation to send to pool dev
     "networkFee": 0.0, // Network/Governance fee (used by some coins like Loki)
-    
+
     /* Some forknote coins have an issue with block height in RPC request, to fix you can enable this option.
        See: https://github.com/forknote/forknote-pool/issues/48 */
     "fixBlockHeightRPC": false
@@ -440,8 +419,8 @@ Explanation for each field:
 /* Wallet daemon connection details (default port is 18980) */
 "wallet": {
     "host": "127.0.0.1",
-    "port": 18982,
-    "password": "--rpc-password"
+    "port": 58082,
+    "password": "user:pass"
 },
 
 /* Redis connection info (default port is 6379) */
@@ -492,13 +471,13 @@ Explanation for each field:
     "enabled": false,
     "fromAddress": "your@email.com", // Your sender email
     "transport": "sendmail", // The transport mode (sendmail, smtp or mailgun)
-    
+
     // Configuration for sendmail transport
     // Documentation: http://nodemailer.com/transports/sendmail/
     "sendmail": {
         "path": "/usr/sbin/sendmail" // The path to sendmail command
     },
-    
+
     // Configuration for SMTP transport
     // Documentation: http://nodemailer.com/smtp/
     "smtp": {
@@ -513,7 +492,7 @@ Explanation for each field:
             "rejectUnauthorized": false // Reject unauthorized TLS/SSL certificate
         }
     },
-    
+
     // Configuration for MailGun transport
     "mailgun": {
         "key": "your-private-key", // Your MailGun Private API key
@@ -556,7 +535,7 @@ Explanation for each field:
     "source": "cryptonator", // Exchange (supported values: cryptonator, altex, crex24, cryptopia, stocks.exchange, tradeogre, maplechange)
     "currency": "USD" // Default currency
 },
-	    
+
 /* Collect pool statistics to display in frontend charts  */
 "charts": {
     "pool": {
@@ -653,8 +632,8 @@ node init.js -module=api
 [Example screenshot](http://i.imgur.com/SEgrI3b.png) of running the pool in single module mode with tmux.
 
 To keep your pool up, on operating system with systemd, you can create add your pool software as a service.  
-Use this [example](https://github.com/dvandal/cryptonote-nodejs-pool/blob/master/deployment/cryptonote-nodejs-pool.service) to create the systemd service `/lib/systemd/system/cryptonote-nodejs-pool.service`
-Then enable and start the service with the following commands : 
+Use this [example](https://github.com/armornetworkdev/armor-nodejs-pool.git/blob/master/deployment/cryptonote-nodejs-pool.service) to create the systemd service `/lib/systemd/system/cryptonote-nodejs-pool.service`
+Then enable and start the service with the following commands :
 
 ```
 sudo systemctl enable cryptonote-nodejs-pool.service
@@ -672,13 +651,13 @@ Variable explanations:
 ```javascript
 
 /* Must point to the API setup in your config.json file. */
-var api = "http://poolhost:8117";
+var api = "http://poolhost:4009";
 
 /* Pool server host to instruct your miners to point to (override daemon setting if set) */
 var poolHost = "poolhost.com";
 
 /* Number of coin decimals places (override daemon setting if set) */
-"coinDecimalPlaces": 4,
+"coinDecimalPlaces": 8,
 
 /* Contact email address. */
 var email = "support@poolhost.com";
@@ -726,13 +705,13 @@ You can configure the API to be accessible via SSL using various methods. Find a
 * Using SSL api in `config.json`:
 
 By using this you will need to update your `api` variable in the `website_example/config.js`. For example:  
-`var api = "https://poolhost:8119";`
+`var api = "https://poolhost:4009";`
 
 * Inside your SSL Listener, add the following:
 
 ``` javascript
 location ~ ^/api/(.*) {
-    proxy_pass http://127.0.0.1:8117/$1$is_args$args;
+    proxy_pass http://127.0.0.1:4009/$1$is_args$args;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 }
 ```
@@ -749,13 +728,13 @@ server {
     server_name api.poolhost.com
     listen 443 ssl http2;
     listen [::]:443 ssl http2;
-    
+
     ssl_certificate /your/ssl/certificate;
     ssl_certificate_key /your/ssl/certificate_key;
 
     location / {
         more_set_headers 'Access-Control-Allow-Origin: *';
-        proxy_pass http://127.0.01:8117;
+        proxy_pass http://127.0.01:4010;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
@@ -780,12 +759,10 @@ the Node.js modules, and any config files that may have been changed.
 * Run `npm update` to force updating/reinstalling of the dependencies.
 * Compare your `config.json` to the latest example ones in this repo or the ones in the setup instructions where each config field is explained. You may need to modify or add any new changes.
 
-### JSON-RPC Commands from CLI
+### JSON-RPC Commands from Armor daemon
 
 Documentation for JSON-RPC commands can be found here:
-* Daemon https://wiki.bytecoin.org/wiki/JSON_RPC_API
-* Wallet https://wiki.bytecoin.org/wiki/Wallet_JSON_RPC_API
-
+* Armor RPC https://github.com/armornetworkdev/armor/wiki
 
 Curl can be used to use the JSON-RPC commands from command-line. Here is an example of calling `getblockheaderbyheight` for block 100:
 
@@ -801,34 +778,12 @@ curl 127.0.0.1:18081/json_rpc -d '{"method":"getblockheaderbyheight","params":{"
 * To keep your pool node script running in background, logging to file, and automatically restarting if it crashes - I suggest using [forever](https://github.com/nodejitsu/forever) or [PM2](https://github.com/Unitech/pm2)
 
 
-Donations
----------
-
-Thanks for supporting my works on this project! If you want to make a donation to [Dvandal](https://github.com/dvandal/), the developper of this project, you can send any amount of your choice to one of theses addresses:
-
-* Bitcoin (BTC): `392gS9zuYQBghmMpK3NipBTaQcooR9UoGy`
-* Bitcoin Cash (BCH): `qp46fz7ht8xdhwepqzhk7ct3aa0ucypfgv5qvv57td`
-* Dash (DASH): `XgFnxEu1ru7RTiM4uH1GWt2yseU1BVBqWL`
-* Ethereum (ETH): `0x8c42D411545c9E1963ff56A91d06dEB8C4A9f444`
-* Ethereum Classic (ETC): `0x4208D6775A2bbABe64C15d76e99FE5676F2768Fb`
-* Litecoin (LTC): `LS9To9u2C95VPHKauRMEN5BLatC8C1k4F1`
-* USD Coin (USDC): `0xb5c6BEc389252F24dd3899262AC0D2754B0fC1a3`
-* Augur (REP): `0x5A66CE95ea2428BC5B2c7EeB7c96FC184258f064`
-* Basic Attention Token (BAT): `0x5A66CE95ea2428BC5B2c7EeB7c96FC184258f064`
-* Chainlink (LINK): `0x5A66CE95ea2428BC5B2c7EeB7c96FC184258f064`
-* Dai (DAI): `0xF2a50BcCEE8BEb7807dA40609620e454465B40A1`
-* Graft (GRFT): `GBqRuitSoU3PFPBAkXMEnLdBRWXH4iDSD6RDxnQiEFjVJhWUi1UuqfV5EzosmaXgpPGE6JJQjMYhZZgWY8EJQn8jQTsuTit`
-* Orchid (OXT): `0xf52488AAA1ab1b1EB659d6632415727108600BCb`
-* Tezos (XTZ): `tz1T1idcT5hfyjfLHWeqbYvmrcYn5JgwrJKW`
-* Zcash (ZCH): `t1YTGVoVbeCuTn3Pg9MPGrSqweFLPGTQ7on`
-* 0x (ZRX): `0x4e52AAfC6dAb2b7812A0a7C24a6DF6FAab65Fc9a`
-
-
 Credits
 ---------
 
 * [fancoder](//github.com/fancoder) - Developper on cryptonote-universal-pool project from which current project is forked.
 * [dvandal](//github.com/dvandal) - Developer of cryptonote-nodejs-pool software
+* [armornetworkde](//github.com/armornetworkdev) - Armor Network Developers Team.
 
 License
 -------
