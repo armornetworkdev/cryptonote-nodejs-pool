@@ -684,7 +684,7 @@ var blockchainExplorer = "http://chainradar.com/{symbol}/block/{id}";
 var transactionExplorer = "http://chainradar.com/{symbol}/transaction/{id}";
 
 /* Any custom CSS theme for pool frontend */
-var themeCss = "themes/light.css";
+var themeCss = "themes/default.css";
 
 /* Default language */
 var defaultLang = 'en';
