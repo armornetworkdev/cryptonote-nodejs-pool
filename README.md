@@ -3,7 +3,15 @@ armor-nodejs-pool
 
 High performance Node.js (with native C addons) mining pool for **Armor Network**.
 
+**Attention! This pool only works with LEGACY ADDRESSES**
+===
+A legacy address is created as follows:
+```
+./walletd --create-wallet --wallet-type=legacy --wallet-file=/PATH/TO/Save/MyArmorLegacy.wallet
+```
+
 #### Table of Contents
+* [**Attention! This pool only works with LEGACY ADDRESSES**](#attention-this-pool-only-works-with-legacy-addresses)
 * [Features](#features)
 * [Community Support](#community--support)
 * [Pools Using This Software](#pools-using-this-software)
@@ -94,6 +102,10 @@ Community / Support
 * [GitHub Wiki](https://github.com/armornetworkdev/armor-nodejs-pool/wiki)
 * [GitHub Issues](https://github.com/armornetworkdev/armor-nodejs-pool/issues)
 * [Telegram Group](https://t.me/ARMORCURRENCY)
+
+Pools Using This Software
+===
+https://miningpoolstats.stream/armor
 
 Usage
 ===
@@ -798,6 +810,17 @@ the Node.js modules, and any config files that may have been changed.
 * Compare your `config.json` to the latest example ones in this repo or the ones in the setup instructions where each config field is explained. You may need to modify or add any new changes.
 
 ### JSON-RPC Commands from Armor daemon
+### JSON-RPC Commands from CLI
+
+Documentation for JSON-RPC commands can be found here: https://github.com/Armor-Network/armor/tree/master/docs
+* Daemon https://github.com/Armor-Network/armor/blob/master/docs/Armor-Node-Daemon-JSON-RPC-API.md
+* Wallet https://github.com/Armor-Network/armor/blob/master/docs/Armor-Wallet-Daemon-JSON-RPC-API.md
+
+Curl can be used to use the JSON-RPC commands from command-line. Here is an example of calling `getblockheaderbyheight` for block 100:
+
+```bash
+curl 127.0.0.1:58081/json_rpc -d '{"method":"getblockheaderbyheight","params":{"height":100}}'
+```
 
 Documentation for JSON-RPC commands can be found here:
 * Armor RPC https://github.com/armornetworkdev/armor/wiki
@@ -816,12 +839,17 @@ curl 127.0.0.1:18081/json_rpc -d '{"method":"getblockheaderbyheight","params":{"
 * To keep your pool node script running in background, logging to file, and automatically restarting if it crashes - I suggest using [forever](https://github.com/nodejitsu/forever) or [PM2](https://github.com/Unitech/pm2)
 
 
+Donations
+===
+https://discord.com/channels/801139879982399509/807983301519212617
+
+
 Credits
 ---------
 
 * [fancoder](//github.com/fancoder) - Developper on cryptonote-universal-pool project from which current project is forked.
 * [dvandal](//github.com/dvandal) - Developer of cryptonote-nodejs-pool software
-* [armornetworkde](//github.com/armornetworkdev) - Armor Network Developers Team.
+* [armornetworkdev](//github.com/armornetworkdev) - Armor Network Developers Team.
 
 License
 -------
