@@ -12,6 +12,8 @@
 	"cnAlgorithm": "cryptonight",
 	"cnVariant": 15,
 	"cnBlobType": 2,
+	"includeHeight": true,
+	"includeAlgo": "cn/zls",
 
 	"logging": {
 		"files": {
