@@ -1,7 +1,7 @@
 {
 	"poolHost": "your.pool.host",
 
-	"coin": "deafult",
+	"coin": "Armor",
 	"symbol": "AMX",
 	"coinUnits": 100000000,
 	"coinDecimalPlaces": 8,
@@ -12,6 +12,8 @@
 	"cnAlgorithm": "cryptonight",
 	"cnVariant": 15,
 	"cnBlobType": 2,
+	"includeHeight": true,
+	"includeAlgo": "cn/zls",
 
 	"logging": {
 		"files": {

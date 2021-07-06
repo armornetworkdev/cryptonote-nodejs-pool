@@ -1,0 +1,55 @@
+Instruction to configure and run Armor (AMX) pool:
+
+Configure Armor-pool:
+    1. Download pool:
+           #git clone https://github.com/armornetwork/armor-nodejs-pool armor-nodejs-pool
+           git clone --branch armor-nodejs-pool https://github.com/username1565/cryptonote-nodejs-pool.git armor-nodejs-pool
+    2. Compile it: "npm update"
+    3. Generate (Note1) SSL certificate "host.key", "host.crt", "RootCA.crt", and put this in the folder "armor-nodejs-pool"
+    4. Go to config_examples, and copy config_armor.json -> config_armor_original.json
+    5. Open config_armor.json, and change the following values:
+        (config.json).poolHost                     -    IP or hostname
+        (config.json).poolServer.poolAddress       -    walletd address (wallet type="legacy", not "amethyst").
+        (config.json).poolServer.sslCert           -    "./host.crt"
+        (config.json).poolServer.sslKey            -    "./host.key"
+        (config.json).poolServer.sslCA             -    "./RootCA.crt"
+        (config.json).api.ssl                      -     true
+        (config.json).api.sslCert                  -    "./host.crt"
+        (config.json).api.sslKey                   -    "./host.key"
+        (config.json).api.sslCA                    -    "./RootCA.crt"
+        (config.json).daemon.host                  -    armord daemon host, IP or domain (127.0.0.1, by default)
+        (config.json).daemon.port                  -    armord daemon port (58051, by default)
+        (config.json).wallet.host                  -    walletd host, IP or domain (127.0.0.1, by default)
+        (config.json).wallet.port                  -    walletd port (58052, by default)
+        (config.json).wallet.password              -    walletd JSON-RPC HTTP cridentials ("user:pass", by default)
+        (config.json).redis.host                   -    redis-server host (127.0.0.1, by default)
+        (config.json).redis.port                   -    redis-server port (6379, by default)
+    6. Save config_armor.json, and copy this to config_armor_backup.json, then.
+    7. Go to /website_example/config.js, and set "poolHost", there. Set another data, and see comments there.
+That's all configuration.
+
+Run Armor pool:
+    1. Run armord.
+    2. Run walletd, type password, and HTTP cridentials. This connecting on armord.
+    3. Run "redis-server", by running this command.
+    4. Run pool-backend with backuped correct config for Armor:
+           pathTo/armor-nodejs-pool>node init.js -config=config_examples/config_armor_backup.json
+    5. Host pool-frontend, using some HTTP server, for example, using "nodejs http-server" (Note3)
+           http-server pathTo/website_example -a 192.168.0.156 -p 8080 -S --cert pathTo/host.crt --key pathTo/host.key
+    6. Go to https://192.168.0.156:8080/
+That's all (Note4).
+___________
+Note1:
+    Here is the guide: https://gist.github.com/username1565/7321d63b44e1241f992c00d76b833c9a
+    and you can use "host", instead of "localhost", to get "host.key", "host.crt", "RootCA.crt".
+
+Note2:
+    To create lecacy-wallet, run
+        ./walletd --wallet-type=legacy --create-wallet --wallet-file=/path/folder
+
+Note3:
+    If you have no installed http-server, you can run:
+        sudo npm install http-server -g
+
+Note4:
+    Maybe this all can be automatized, but walletd waiting an input from user, by running one sh-file.

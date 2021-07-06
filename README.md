@@ -3,7 +3,15 @@ armor-nodejs-pool
 
 High performance Node.js (with native C addons) mining pool for **Armor Network**.
 
+**Attention! This pool only works with LEGACY ADDRESSES**
+===
+A legacy address is created as follows:
+```
+./walletd --create-wallet --wallet-type=legacy --wallet-file=/PATH/TO/Save/MyArmorLegacy.wallet
+```
+
 #### Table of Contents
+* [**Attention! This pool only works with LEGACY ADDRESSES**](#attention-this-pool-only-works-with-legacy-addresses)
 * [Features](#features)
 * [Community Support](#community--support)
 * [Pools Using This Software](#pools-using-this-software)
@@ -95,26 +103,55 @@ Community / Support
 * [GitHub Issues](https://github.com/armornetworkdev/armor-nodejs-pool/issues)
 * [Telegram Group](https://t.me/ARMORCURRENCY)
 
+Pools Using This Software
+===
+https://miningpoolstats.stream/armor
+
 Usage
 ===
-
 #### Requirements
-* [Node.js](http://nodejs.org/) v12.0+
-  * For Ubuntu:
- ```
-  curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash
-  sudo apt-get install -y nodejs
- ```
-  * Or use NVM(https://github.com/creationix/nvm) for debian/ubuntu.
++ [Node.js](http://nodejs.org/) v12.0+
+  + For Ubuntu:
+    ```
+    curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash
+    sudo apt-get install -y nodejs
+    ```
+    + Check nodejs version:
+     ```
+     node --version
+     ```
+      + Must return v12.0+.
+        + Else, you can install "n", to run `sudo n [version to install]`:
+       ```
+        sudo npm install -g n
+        n --help
+        sudo n 12
+       ```
+  + Or use NVM(https://github.com/creationix/nvm) for debian/ubuntu.
 
-
-* [Redis](http://redis.io/) key-value store v2.6+
-  * For Ubuntu:
-```
-sudo add-apt-repository ppa:chris-lea/redis-server
-sudo apt-get update
-sudo apt-get install redis-server
- ```
++ [Redis](http://redis.io/) key-value store v2.6+
+  + For Ubuntu:
+  ```
+  sudo add-apt-repository ppa:chris-lea/redis-server
+  sudo apt-get update
+  sudo apt-get install redis-server
+  ```
+    + If you have errors, like this:
+      ```
+      Reading package lists... Done 
+      W: Skipping acquire of configured file '6.0/binary-amd64/Packages' as repository 'https://apt.llvm.org/bionic llvm-toolchain-bionic InRelease' doesn't have the component '6.0' (component misspelt in sources.list?) 
+      W: Skipping acquire of configured file '6.0/i18n/Translation-en' as repository 'https://apt.llvm.org/bionic llvm-toolchain-bionic InRelease' doesn't have the component '6.0' (component misspelt in sources.list?) 
+      W: Skipping acquire of configured file '6.0/cnf/Commands-amd64' as repository 'https://apt.llvm.org/bionic llvm-toolchain-bionic InRelease' doesn't have the component '6.0' (component misspelt in sources.list?)
+      ```
+      + Try to see packages: `sudo grep -rhE ^deb /etc/apt/sources.list*`
+      + Then just open this file `sudo nano /etc/apt/sources.list`
+      + And comment both lines with `#`
+      ```
+      #deb https://apt.llvm.org/bionic/ llvm-toolchain-bionic 6.0 main 
+      #deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-6.0 main
+      ```
+        + then `run sudo apt update`
+ 
  Dont forget to tune redis-server:
  ```
 echo never > /sys/kernel/mm/transparent_hugepage/enabled
@@ -131,6 +168,8 @@ echo 1024 > /proc/sys/net/core/somaxconn
 * Boost is required for the cryptoforknote-util module
   * For Ubuntu: `sudo apt-get install libboost-all-dev`
 
+* libsodium  
+  * For Ubuntu: `sudo apt-get install libsodium-dev`
 
 ##### Seriously
 Those are legitimate requirements. If you use old versions of Node.js or Redis that may come with your system package manager then you will have problems. Follow the linked instructions to get the last stable versions.
@@ -642,8 +681,21 @@ sudo systemctl start cryptonote-nodejs-pool.service
 
 #### 4) Host the front-end
 
-Simply host the contents of the `website_example` directory on file server capable of serving simple static files.
-
++ Simply host the contents of the `website_example` directory on file server capable of serving simple static files.
+  + For example:
+   ```
+   sudo npm install http-server -g
+   ```
+    + then
+      ```
+      http-server pathwayTo/website_example -a 192.168.0.156 -p 8080
+      ```
+      + then go to http://192.168.0.156:8080
+    + or
+      ```
+      http-server pathwayTo/website_example -a 192.168.0.156 -p 8080 -S --cert pathwayTo/localhost.crt --key pathwayTo/localhost.key
+      ```
+      + then go to https://192.168.0.156:8080
 
 Edit the variables in the `website_example/config.js` file to use your pool's specific configuration.
 Variable explanations:
@@ -653,11 +705,14 @@ Variable explanations:
 /* Must point to the API setup in your config.json file. */
 var api = "http://poolhost:4009";
 
+/* Must match the "coin"-value in coin config.json, else this will be displayed twice... */
+var parentCoin = "default"; //when "coin": "default"
+
 /* Pool server host to instruct your miners to point to (override daemon setting if set) */
 var poolHost = "poolhost.com";
 
 /* Number of coin decimals places (override daemon setting if set) */
-"coinDecimalPlaces": 8,
+var coinDecimalPlaces = 8;
 
 /* Contact email address. */
 var email = "support@poolhost.com";
@@ -681,7 +736,7 @@ var blockchainExplorer = "http://chainradar.com/{symbol}/block/{id}";
 var transactionExplorer = "http://chainradar.com/{symbol}/transaction/{id}";
 
 /* Any custom CSS theme for pool frontend */
-var themeCss = "themes/light.css";
+var themeCss = "themes/default.css";
 
 /* Default language */
 var defaultLang = 'en';
@@ -699,57 +754,52 @@ to `index.html` or other front-end files thus reducing the difficulty of merging
 Then simply serve the files via nginx, Apache, Google Drive, or anything that can host static content.
 
 #### SSL
+  + If you have no any SSL Certificate, or private key, you can generate this, as self-assigned certificate, [by the following guide](https://gist.github.com/username1565/7321d63b44e1241f992c00d76b833c9a).
 
-You can configure the API to be accessible via SSL using various methods. Find an example for nginx below:
+  + You can configure the API to be accessible via SSL using various methods.
+    + Using SSL api in `config.json`:
+      + Need to switch `(config.json).api.ssl = true`, and set it true, to run API via HTTPS too, on start pool-backend.
+        + By using this you will need to update your `api` variable in the `website_example/config.js`.
+        + For example: `var api = "https://poolhost:4009";` (just, change API from HTTP to HTTPS), there, and see comments.
 
-* Using SSL api in `config.json`:
+    + Find an example for nginx below. Inside your SSL Listener, add the following:
+      ``` javascript
+      location ~ ^/api/(.*) {
+          proxy_pass http://127.0.0.1:4009/$1$is_args$args;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      }
+      ```
+      + By adding this you will need to update your `api` variable in the `website_example/config.js` to include the /api.
+        + For example: `var api = "http://poolhost/api";`
 
-By using this you will need to update your `api` variable in the `website_example/config.js`. For example:  
-`var api = "https://poolhost:4009";`
+      + You no longer need to include the port in the variable because of the proxy connection.
 
-* Inside your SSL Listener, add the following:
+    + Using his own subdomain, for example `api.poolhost.com`:
+    ```bash
+    server {
+        server_name api.poolhost.com
+        listen 443 ssl http2;
+        listen [::]:443 ssl http2;
 
-``` javascript
-location ~ ^/api/(.*) {
-    proxy_pass http://127.0.0.1:4009/$1$is_args$args;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-}
-```
+        ssl_certificate /your/ssl/certificate;
+        ssl_certificate_key /your/ssl/certificate_key;
 
-By adding this you will need to update your `api` variable in the `website_example/config.js` to include the /api. For example:  
-`var api = "http://poolhost/api";`
-
-You no longer need to include the port in the variable because of the proxy connection.
-
-* Using his own subdomain, for example `api.poolhost.com`:
-
-```bash
-server {
-    server_name api.poolhost.com
-    listen 443 ssl http2;
-    listen [::]:443 ssl http2;
-
-    ssl_certificate /your/ssl/certificate;
-    ssl_certificate_key /your/ssl/certificate_key;
-
-    location / {
-        more_set_headers 'Access-Control-Allow-Origin: *';
-        proxy_pass http://127.0.01:4010;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_cache_bypass $http_upgrade;
+        location / {
+            more_set_headers 'Access-Control-Allow-Origin: *';
+            proxy_pass http://127.0.01:4010;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header Host $host;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_cache_bypass $http_upgrade;
+        }
     }
-}
-```
-
-By adding this you will need to update your `api` variable in the `website_example/config.js`. For example:  
-`var api = "//api.poolhost.com";`
-
-You no longer need to include the port in the variable because of the proxy connection.
-
+    ```
+      + By adding this you will need to update your `api` variable in the `website_example/config.js`.
+        + For example: `var api = "//api.poolhost.com";`
+    
+      + You no longer need to include the port in the variable because of the proxy connection.
 
 #### Upgrading
 When updating to the latest code its important to not only `git pull` the latest from this repo, but to also update
@@ -760,6 +810,17 @@ the Node.js modules, and any config files that may have been changed.
 * Compare your `config.json` to the latest example ones in this repo or the ones in the setup instructions where each config field is explained. You may need to modify or add any new changes.
 
 ### JSON-RPC Commands from Armor daemon
+### JSON-RPC Commands from CLI
+
+Documentation for JSON-RPC commands can be found here: https://github.com/Armor-Network/armor/tree/master/docs
+* Daemon https://github.com/Armor-Network/armor/blob/master/docs/Armor-Node-Daemon-JSON-RPC-API.md
+* Wallet https://github.com/Armor-Network/armor/blob/master/docs/Armor-Wallet-Daemon-JSON-RPC-API.md
+
+Curl can be used to use the JSON-RPC commands from command-line. Here is an example of calling `getblockheaderbyheight` for block 100:
+
+```bash
+curl 127.0.0.1:58081/json_rpc -d '{"method":"getblockheaderbyheight","params":{"height":100}}'
+```
 
 Documentation for JSON-RPC commands can be found here:
 * Armor RPC https://github.com/armornetworkdev/armor/wiki
@@ -778,12 +839,17 @@ curl 127.0.0.1:18081/json_rpc -d '{"method":"getblockheaderbyheight","params":{"
 * To keep your pool node script running in background, logging to file, and automatically restarting if it crashes - I suggest using [forever](https://github.com/nodejitsu/forever) or [PM2](https://github.com/Unitech/pm2)
 
 
+Donations
+===
+https://discord.com/channels/801139879982399509/807983301519212617
+
+
 Credits
 ---------
 
 * [fancoder](//github.com/fancoder) - Developper on cryptonote-universal-pool project from which current project is forked.
 * [dvandal](//github.com/dvandal) - Developer of cryptonote-nodejs-pool software
-* [armornetworkde](//github.com/armornetworkdev) - Armor Network Developers Team.
+* [armornetworkdev](//github.com/armornetworkdev) - Armor Network Developers Team.
 
 License
 -------
